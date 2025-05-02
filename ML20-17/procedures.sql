@@ -24,16 +24,16 @@ BEGIN
         bb.name AS bank,
         nmw.status AS STATUS_FINAL,
         JSON_EXTRACT(nmw.notification_response, '$.errors[0].message') AS detail_error
-    FROM EP_ENTEL_MISLUCAS_UAT.dispersion_file_detail dfd
-    INNER JOIN EP_ENTEL_MISLUCAS_UAT.dispersion_file_history dfh 
+    FROM EP_ENTEL_MISLUCAS.dispersion_file_detail dfd
+    INNER JOIN EP_ENTEL_MISLUCAS.dispersion_file_history dfh 
         ON dfd.id_dispersion_file_history = dfh.id
-    LEFT JOIN EP_ENTEL_MISLUCAS_UAT.notification_monnet_webhook nmw 
+    LEFT JOIN EP_ENTEL_MISLUCAS.notification_monnet_webhook nmw 
         ON dfd.id_row_file = nmw.payout_order_id
-    LEFT JOIN EP_ENTEL_MISLUCAS_UAT.payout_order_requests pyrq 
+    LEFT JOIN EP_ENTEL_MISLUCAS.payout_order_requests pyrq 
         ON dfd.id_row_file = pyrq.order_id
-    LEFT JOIN EP_ENTEL_MISLUCAS_UAT.payout_order_responses pyrp 
+    LEFT JOIN EP_ENTEL_MISLUCAS.payout_order_responses pyrp 
         ON pyrq.id = pyrp.payout_request_id
-    LEFT JOIN EP_ENTEL_MISLUCAS_UAT.beneficiary_bank bb 
+    LEFT JOIN EP_ENTEL_MISLUCAS.beneficiary_bank bb 
         ON pyrq.bank_code = bb.code
     WHERE dfh.id = in_dispersion_file_history_id;
 END
