@@ -1,25 +1,18 @@
-CREATE ALGORITHM = UNDEFINED 
-DEFINER = `rootDev`@`%` 
-SQL SECURITY DEFINER 
-VIEW `v_notification_webhook_dispersion` AS
-
-WITH `T1` AS (
-    SELECT 
-        `nm`.`payout_order_id` AS `payout_order_id`,
-        `nm`.`status` AS `status`,
-        `nm`.`notification_response` AS `notification_response`,
-        `nm`.`created_at` AS `created_at`
-    FROM 
-        `notification_monnet_webhook` `nm`
-        LEFT JOIN (
-            `payout_order_responses` `prq`
-            LEFT JOIN `payout_order_requests` `pr`
-                ON `pr`.`id` = `prq`.`payout_request_id`
-        )
-        ON `nm`.`payout_order_id` = `pr`.`order_id`
-)
-
-SELECT 
+CREATE OR REPLACE
+ALGORITHM = UNDEFINED VIEW `EP_ENTEL_MISLUCAS`.`v_notification_webhook_dispersion` AS with `T1` as (
+select
+    `nm`.`payout_order_id` AS `payout_order_id`,
+    `nm`.`status` AS `status`,
+    `nm`.`notification_response` AS `notification_response`,
+    `nm`.`created_at` AS `created_at`
+from
+    (`EP_ENTEL_MISLUCAS_UAT`.`notification_monnet_webhook` `nm`
+left join (`EP_ENTEL_MISLUCAS_UAT`.`payout_order_responses` `prq`
+left join `EP_ENTEL_MISLUCAS_UAT`.`payout_order_requests` `pr` on
+    ((`pr`.`id` = `prq`.`payout_request_id`))) on
+    ((`nm`.`payout_order_id` = `pr`.`order_id`))))
+select
+	`dfh`.`file_name` AS `dispersion_file_name`,
     `dfd`.`id` AS `dispersion_file_detail_id`,
     `prq`.`id` AS `id_payout_order_response`,
     `dfd`.`document_number` AS `document_number`,
@@ -46,17 +39,17 @@ SELECT
     `prq`.`id_dispersion_file_history` AS `id_dispersion_file_history`,
     `dfd`.`channel_type` AS `channel_type`,
     `dfd`.`description` AS `description`
-FROM 
-    `dispersion_file_detail` `dfd`
-    JOIN `dispersion_file_history` `dfh`
-        ON `dfd`.`id_dispersion_file_history` = `dfh`.`id`
-    LEFT JOIN `payout_order_requests` `pr`
-        ON `pr`.`order_id` = `dfd`.`id_row_file`
-    LEFT JOIN `payout_order_responses` `prq`
-        ON `pr`.`id` = `prq`.`payout_request_id`
-    LEFT JOIN `beneficiary_document` `bd`
-        ON `dfd`.`document_type` = `bd`.`type`
-    LEFT JOIN `beneficiary_bank` `bb`
-        ON `pr`.`bank_code` = `bb`.`code`
-    LEFT JOIN `T1` `webhook`
-        ON `webhook`.`payout_order_id` = `pr`.`order_id`;
+from
+    ((((((`EP_ENTEL_MISLUCAS_UAT`.`dispersion_file_detail` `dfd`
+join `EP_ENTEL_MISLUCAS_UAT`.`dispersion_file_history` `dfh` on
+    ((`dfd`.`id_dispersion_file_history` = `dfh`.`id`)))
+left join `EP_ENTEL_MISLUCAS_UAT`.`payout_order_requests` `pr` on
+    ((`pr`.`order_id` = `dfd`.`id_row_file`)))
+left join `EP_ENTEL_MISLUCAS_UAT`.`payout_order_responses` `prq` on
+    ((`pr`.`id` = `prq`.`payout_request_id`)))
+left join `EP_ENTEL_MISLUCAS_UAT`.`beneficiary_document` `bd` on
+    ((`dfd`.`document_type` = `bd`.`type`)))
+left join `EP_ENTEL_MISLUCAS_UAT`.`beneficiary_bank` `bb` on
+    ((`pr`.`bank_code` = `bb`.`code`)))
+left join `T1` `webhook` on
+    ((`webhook`.`payout_order_id` = `pr`.`order_id`)));
