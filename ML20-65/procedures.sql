@@ -1,6 +1,6 @@
 -- stored procedure get_sales_details_summary
 DELIMITER $$
-CREATE DEFINER=`rootDev`@`%` PROCEDURE `get_sales_details_summary`(IN in_date_filter DATE)
+CREATE DEFINER=`root`@`%` PROCEDURE `get_sales_details_summary`(IN in_date_filter DATE)
 BEGIN
     DECLARE ACTIVE_STATUS TINYINT DEFAULT 1;
     DECLARE HAS_NOT_ERROR TINYINT DEFAULT 0;
@@ -55,7 +55,7 @@ DELIMITER ;
 
 -- stored procedure update_is_end_of_month
 DELIMITER $$
-CREATE DEFINER=`rootDev`@`%` PROCEDURE `update_is_end_of_month`(IN in_year INT, IN in_month INT)
+CREATE DEFINER=`root`@`%` PROCEDURE `update_is_end_of_month`(IN in_year INT, IN in_month INT)
 BEGIN
     DECLARE start_date DATE;
     DECLARE end_date DATE;
@@ -100,7 +100,7 @@ DELIMITER ;
 
 -- stored procedure get_responsible_persons_by_seller_id
 DELIMITER $$
-CREATE DEFINER=`rootDev`@`%` PROCEDURE `get_responsible_persons_by_seller_id`(
+CREATE DEFINER=`root`@`%` PROCEDURE `get_responsible_persons_by_seller_id`(
     IN in_seller_id CHAR(36)
 )
 BEGIN

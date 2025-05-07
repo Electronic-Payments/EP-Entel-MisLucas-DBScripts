@@ -1,4 +1,6 @@
-CREATE DEFINER=`rootDev`@`%` PROCEDURE `get_dispersion_file_history_detail`(
+DELIMITER //
+
+CREATE DEFINER=`root`@`%` PROCEDURE `get_dispersion_file_history_detail`(
     IN in_dispersion_file_history_id CHAR(36)
 )
 BEGIN
@@ -36,4 +38,6 @@ BEGIN
     LEFT JOIN EP_ENTEL_MISLUCAS.beneficiary_bank bb 
         ON pyrq.bank_code = bb.code
     WHERE dfh.id = in_dispersion_file_history_id;
-END
+END //
+
+DELIMITER ;

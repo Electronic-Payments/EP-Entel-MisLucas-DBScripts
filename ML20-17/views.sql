@@ -6,9 +6,9 @@ select
     `nm`.`notification_response` AS `notification_response`,
     `nm`.`created_at` AS `created_at`
 from
-    (`EP_ENTEL_MISLUCAS_UAT`.`notification_monnet_webhook` `nm`
-left join (`EP_ENTEL_MISLUCAS_UAT`.`payout_order_responses` `prq`
-left join `EP_ENTEL_MISLUCAS_UAT`.`payout_order_requests` `pr` on
+    (`EP_ENTEL_MISLUCAS`.`notification_monnet_webhook` `nm`
+left join (`EP_ENTEL_MISLUCAS`.`payout_order_responses` `prq`
+left join `EP_ENTEL_MISLUCAS`.`payout_order_requests` `pr` on
     ((`pr`.`id` = `prq`.`payout_request_id`))) on
     ((`nm`.`payout_order_id` = `pr`.`order_id`))))
 select
@@ -40,16 +40,16 @@ select
     `dfd`.`channel_type` AS `channel_type`,
     `dfd`.`description` AS `description`
 from
-    ((((((`EP_ENTEL_MISLUCAS_UAT`.`dispersion_file_detail` `dfd`
-join `EP_ENTEL_MISLUCAS_UAT`.`dispersion_file_history` `dfh` on
+    ((((((`EP_ENTEL_MISLUCAS`.`dispersion_file_detail` `dfd`
+join `EP_ENTEL_MISLUCAS`.`dispersion_file_history` `dfh` on
     ((`dfd`.`id_dispersion_file_history` = `dfh`.`id`)))
-left join `EP_ENTEL_MISLUCAS_UAT`.`payout_order_requests` `pr` on
+left join `EP_ENTEL_MISLUCAS`.`payout_order_requests` `pr` on
     ((`pr`.`order_id` = `dfd`.`id_row_file`)))
-left join `EP_ENTEL_MISLUCAS_UAT`.`payout_order_responses` `prq` on
+left join `EP_ENTEL_MISLUCAS`.`payout_order_responses` `prq` on
     ((`pr`.`id` = `prq`.`payout_request_id`)))
-left join `EP_ENTEL_MISLUCAS_UAT`.`beneficiary_document` `bd` on
+left join `EP_ENTEL_MISLUCAS`.`beneficiary_document` `bd` on
     ((`dfd`.`document_type` = `bd`.`type`)))
-left join `EP_ENTEL_MISLUCAS_UAT`.`beneficiary_bank` `bb` on
+left join `EP_ENTEL_MISLUCAS`.`beneficiary_bank` `bb` on
     ((`pr`.`bank_code` = `bb`.`code`)))
 left join `T1` `webhook` on
     ((`webhook`.`payout_order_id` = `pr`.`order_id`)));
