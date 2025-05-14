@@ -52,3 +52,7 @@ CREATE TABLE IF NOT EXISTS `daily_sales_details` (
     CONSTRAINT `fk_daily_sales_detail_manager_actor_id` FOREIGN KEY (`manager_id`) REFERENCES `actors` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
     CONSTRAINT `fk_daily_sales_detail_seller_actor_id` FOREIGN KEY (`seller_id`) REFERENCES `actors` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+    ALTER TABLE `EP_ENTEL_MISLUCAS_UAT`.`daily_sales_details` 
+CHANGE COLUMN `error_description` `error_description` TEXT NULL DEFAULT NULL ;

@@ -1,0 +1,1 @@
+INSERT INTO `EP_ENTEL_MISLUCAS`.`actor_types` (`id`, `code`, `name`, `description`, `active`, `created_at`, `created_by`, `updated_at`) VALUES ('743ec9b5-3d4e-42f2-9d65-7a8cb76156d6', 'SELLER', 'Vendedor', 'Corresponde a un vendedor.', '1', '2025-04-02 15:45:18', '0bd1854d-05e0-11f0-9de9-42010a400011', '2025-04-08 13:39:11');
