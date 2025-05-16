@@ -4,15 +4,16 @@ select
     `nm`.`payout_order_id` AS `payout_order_id`,
     `nm`.`status` AS `status`,
     `nm`.`notification_response` AS `notification_response`,
-    `nm`.`created_at` AS `created_at`
+    `nm`.`created_at` AS `created_at`,
+    `nm`.`status_change_date_time` as `status_change_date_time`
 from
-    (`EP_ENTEL_MISLUCAS`.`notification_monnet_webhook` `nm`
-left join (`EP_ENTEL_MISLUCAS`.`payout_order_responses` `prq`
-left join `EP_ENTEL_MISLUCAS`.`payout_order_requests` `pr` on
+    (`notification_monnet_webhook` `nm`
+left join (`payout_order_responses` `prq`
+left join `payout_order_requests` `pr` on
     ((`pr`.`id` = `prq`.`payout_request_id`))) on
     ((`nm`.`payout_order_id` = `pr`.`order_id`))))
 select
-	`dfh`.`file_name` AS `dispersion_file_name`,
+    `dfh`.`file_name` AS `dispersion_file_name`,
     `dfd`.`id` AS `dispersion_file_detail_id`,
     `prq`.`id` AS `id_payout_order_response`,
     `dfd`.`document_number` AS `document_number`,
@@ -30,26 +31,27 @@ select
     `pr`.`created_at` AS `request_created_at`,
     `prq`.`created_at` AS `response_created_at`,
     `webhook`.`created_at` AS `webhook_created_at`,
-    TIMESTAMPDIFF(SECOND, `prq`.`created_at`, `webhook`.`created_at`) AS `processing_time_seconds`,
+    `webhook`.`status_change_date_time` AS `webhook_status_change_date`,
+    timestampdiff(SECOND, `prq`.`created_at`, `webhook`.`created_at`) AS `processing_time_seconds`,
     `bb`.`id` AS `bank_id`,
     `bb`.`name` AS `bank_name`,
     `webhook`.`status` AS `final_status`,
-    JSON_EXTRACT(`webhook`.`notification_response`, '$.errors[0].message') AS `detail_error`,
+    json_extract(`webhook`.`notification_response`, '$.errors[0].message') AS `detail_error`,
     `prq`.`id_row_file` AS `id_row_file`,
     `prq`.`id_dispersion_file_history` AS `id_dispersion_file_history`,
     `dfd`.`channel_type` AS `channel_type`,
     `dfd`.`description` AS `description`
 from
-    ((((((`EP_ENTEL_MISLUCAS`.`dispersion_file_detail` `dfd`
-join `EP_ENTEL_MISLUCAS`.`dispersion_file_history` `dfh` on
+    ((((((`dispersion_file_detail` `dfd`
+join `dispersion_file_history` `dfh` on
     ((`dfd`.`id_dispersion_file_history` = `dfh`.`id`)))
-left join `EP_ENTEL_MISLUCAS`.`payout_order_requests` `pr` on
+left join `payout_order_requests` `pr` on
     ((`pr`.`order_id` = `dfd`.`id_row_file`)))
-left join `EP_ENTEL_MISLUCAS`.`payout_order_responses` `prq` on
+left join `payout_order_responses` `prq` on
     ((`pr`.`id` = `prq`.`payout_request_id`)))
-left join `EP_ENTEL_MISLUCAS`.`beneficiary_document` `bd` on
+left join `beneficiary_document` `bd` on
     ((`dfd`.`document_type` = `bd`.`type`)))
-left join `EP_ENTEL_MISLUCAS`.`beneficiary_bank` `bb` on
+left join `beneficiary_bank` `bb` on
     ((`pr`.`bank_code` = `bb`.`code`)))
 left join `T1` `webhook` on
     ((`webhook`.`payout_order_id` = `pr`.`order_id`)));
