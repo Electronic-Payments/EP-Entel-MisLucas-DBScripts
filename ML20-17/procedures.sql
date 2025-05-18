@@ -4,7 +4,7 @@ DROP PROCEDURE IF EXISTS EP_ENTEL_MISLUCAS.get_dispersion_file_history_summary;
 
 DELIMITER //
 
-CREATE DEFINER=`rootDev`@`%` PROCEDURE `EP_ENTEL_MISLUCAS`.`get_dispersion_file_history_summary`(
+CREATE DEFINER=`rootDev`@`%` PROCEDURE `get_dispersion_file_history_summary`(
     IN in_dispersion_file_history_id CHAR(36)
 )
 BEGIN
@@ -26,6 +26,7 @@ BEGIN
         pyrq.created_at AS date_request,
         pyrp.created_at AS date_response,
         nmw.created_at AS date_webhook,
+        nmw.status_change_date_time AS date_webhook_status_change,
         TIMESTAMPDIFF(SECOND, pyrq.created_at, nmw.created_at) AS diff_response,
         bb.name AS bank,
         nmw.status AS STATUS_FINAL,
