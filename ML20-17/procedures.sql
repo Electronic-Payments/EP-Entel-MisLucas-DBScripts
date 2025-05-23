@@ -39,17 +39,18 @@ BEGIN
     LEFT JOIN payout_order_responses pyrp 
         ON pyrq.id = pyrp.payout_request_id
     LEFT JOIN (
-        SELECT nmw_group.*
-        FROM notification_monnet_webhook nmw_group
-        INNER JOIN (
-            SELECT nmw_sub_group.payout_order_id, 
-			MAX(nmw_sub_group.status_change_date_time) AS max_date_change_date,
-            MAX(nmw_sub_group.created_at) AS max_date_created_at
-            FROM notification_monnet_webhook nmw_sub_group
-            GROUP BY nmw_sub_group.payout_order_id
-        ) nmw_latest ON nmw_group.payout_order_id = nmw_latest.payout_order_id
-                     AND nmw_group.status_change_date_time = nmw_latest.max_date_change_date
-                     AND nmw_group.created_at = nmw_latest.max_date_created_at
+        SELECT *
+        FROM (
+            SELECT nmw_group.*,
+                   ROW_NUMBER() OVER (
+                       PARTITION BY nmw_group.payout_order_id
+                       ORDER BY nmw_group.status_change_date_time DESC,
+                                nmw_group.created_at DESC,
+                                nmw_group.id DESC
+                   ) AS rn
+            FROM notification_monnet_webhook nmw_group
+        ) ranked
+        WHERE rn = 1
     ) nmw ON pyrq.order_id = nmw.payout_order_id
     LEFT JOIN beneficiary_bank bb 
         ON pyrq.bank_code = bb.code
@@ -84,17 +85,18 @@ BEGIN
     LEFT JOIN payout_order_requests porq ON dfd.id_row_file = porq.order_id
     LEFT JOIN payout_order_responses pors ON porq.id = pors.payout_request_id
     LEFT JOIN (
-        SELECT nmw_group.*
-        FROM notification_monnet_webhook nmw_group
-        INNER JOIN (
-            SELECT nmw_sub_group.payout_order_id, 
-			MAX(nmw_sub_group.status_change_date_time) AS max_date_change_date,
-            MAX(nmw_sub_group.created_at) AS max_date_created_at
-            FROM notification_monnet_webhook nmw_sub_group
-            GROUP BY nmw_sub_group.payout_order_id
-        ) nmw_latest ON nmw_group.payout_order_id = nmw_latest.payout_order_id
-                     AND nmw_group.status_change_date_time = nmw_latest.max_date_change_date
-                     AND nmw_group.created_at = nmw_latest.max_date_created_at
+        SELECT *
+        FROM (
+            SELECT nmw_group.*,
+                   ROW_NUMBER() OVER (
+                       PARTITION BY nmw_group.payout_order_id
+                       ORDER BY nmw_group.status_change_date_time DESC,
+                                nmw_group.created_at DESC,
+                                nmw_group.id DESC
+                   ) AS rn
+            FROM notification_monnet_webhook nmw_group
+        ) ranked
+        WHERE rn = 1
     ) nmw ON porq.order_id = nmw.payout_order_id
     WHERE dfd.id_dispersion_file_history = in_dispersion_file_history_id;
 END //
